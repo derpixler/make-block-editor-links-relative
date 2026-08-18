@@ -1,6 +1,6 @@
-=== Make Gutenberg Links Relative ===
+=== WP Make Block Editor Links Relative ===
 Contributors: derpixler
-Tags: urls, links, gutenberg, block editor, relative urls, migration, staging
+Tags: relative urls, links, block editor, migration, staging
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
@@ -37,7 +37,7 @@ the stored content.
 == Installation ==
 
 1. Upload the plugin directory to `/wp-content/plugins/`, or install it via
-   Composer (`derpixler/wp-make-gutenberg-links-relative`).
+   Composer (`derpixler/wp-make-block-editor-links-relative`).
 2. Activate the plugin.
 3. Done — no further configuration.
 
@@ -64,6 +64,12 @@ They are never modified.
 = Does it change the database on activation? =
 
 No. It only changes what is written from that point on.
+
+== Screenshots ==
+
+1. The rendered page — internal links and images resolve root-relative, external links stay absolute.
+2. The block editor with link-generating blocks (heading, paragraph, button, image, list).
+3. The code editor shows the content stored domain-free.
 
 == Changelog ==
 

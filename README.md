@@ -1,6 +1,6 @@
-# Make Gutenberg Links Relative
+# WP Make Block Editor Links Relative
 
-![Make Gutenberg Links Relative](assets/hero.jpg)
+![WP Make Block Editor Links Relative](assets/hero.jpg)
 
 **Your WordPress site is quietly poisoning its own database — and one day it will cost you a migration.**
 
@@ -10,7 +10,7 @@ Every time someone hits *Update* in the block editor, WordPress takes your domai
 
 WordPress doesn't store links. It stores **absolute URLs** — `https://yourdomain.com/…` — inside the database.
 
-The block editor (Gutenberg) is the worst offender. It serializes every block with the full domain baked into the block attributes:
+The block editor is the worst offender. It serializes every block with the full domain baked into the block attributes:
 
 ```html
 <!-- wp:image {"url":"https://yourdomain.com/wp-content/uploads/2026/08/x.jpg","id":42} -->
@@ -31,13 +31,13 @@ That `yourdomain.com` never leaves. It looks harmless. It isn't.
 
 ## Why WordPress does this — and why it won't stop on its own
 
-This isn't a Gutenberg bug. It's 20-year-old architecture.
+This isn't a block editor bug. It's 20-year-old architecture.
 
 WordPress was built around one assumption: **one site, one fixed URL**, stored in the database. Every core function — `home_url()`, `get_permalink()`, the media library — returns absolute URLs, because content has to work *outside* a browser too: RSS feeds, email notifications, the REST API, the mobile apps, oEmbed, sitemaps, canonical and Open Graph tags. In all of those, a `href="/page/"` is meaningless; only `https://domain/page/` resolves.
 
 So, historically, "moving a site" always meant exactly one thing: a risky `search-replace` across the entire database. The core team has declined to change this for years — it's the price of the one-site model, and you were never the target audience.
 
-Gutenberg just made it worse: it stores your domain **twice** — in the visible HTML *and* inside the JSON of every single block — and re-bakes it on every save.
+The block editor just made it worse: it stores your domain **twice** — in the visible HTML *and* inside the JSON of every single block — and re-bakes it on every save.
 
 **This plugin breaks the cycle for good.**
 
@@ -89,14 +89,14 @@ Both plain URLs (`https://host/path`) and JSON-escaped URLs (`https:\/\/host\/pa
     { "type": "vcs", "url": "https://github.com/derpixler/wp-make-gutenberg-links-relative.git" }
   ],
   "require": {
-    "derpixler/wp-make-gutenberg-links-relative": "^1.0"
+    "derpixler/wp-make-block-editor-links-relative": "^1.0"
   }
 }
 ```
 
 The package is `type: wordpress-plugin`, so with `composer/installers` it installs
 into `wp-content/plugins/{name}/`. Activate it once (wp-admin → Plugins, or
-`wp plugin activate wp-make-gutenberg-links-relative`) — the filters run
+`wp plugin activate wp-make-block-editor-links-relative`) — the filters run
 immediately, no further configuration.
 
 **Manual:** copy the plugin directory into `wp-content/plugins/` and activate it.
@@ -158,7 +158,7 @@ The end-to-end suite covers all three layers:
 | --- | --- |
 | `make-links-relative.spec.js` | Render layer: legacy absolute URLs are neutralized on output, DB untouched |
 | `gutenberg-blocks.spec.js` | Save layer: a landing page of link-generating blocks (heading, paragraph, button, image, list) is stored domain-free via the real block-editor REST endpoint |
-| `block-editor.spec.js` | Backend UI: a link typed in the Gutenberg editor is saved domain-free |
+| `block-editor.spec.js` | Backend UI: a link typed in the block editor is saved domain-free |
 
 ---
 

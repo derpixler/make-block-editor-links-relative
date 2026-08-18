@@ -4,11 +4,15 @@
  *
  * This file is intentionally free of WordPress dependencies so the
  * normalization can be unit-tested in isolation. The plugin entry point
- * (wp-make-gutenberg-links-relative.php) wires these functions into
+ * (wp-make-block-editor-links-relative.php) wires these functions into
  * WordPress hooks and supplies the real base-URL list.
  *
- * @package WP_Make_Gutenberg_Links_Relative
+ * @package WP_Make_Block_Editor_Links_Relative
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 if ( ! function_exists( 'wp_mglr_make_relative' ) ) {
 	/**

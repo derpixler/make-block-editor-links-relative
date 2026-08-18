@@ -1,5 +1,5 @@
 {
-    "name": "derpixler/wp-make-gutenberg-links-relative",
+    "name": "derpixler/wp-make-block-editor-links-relative",
     "description": "Stops the block editor from baking hard-coded domains into your content. Your site's own URLs are stored and rendered root-relative, so staging, production and every future domain change just work.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
@@ -13,11 +13,6 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5 || ^11.0"
-    },
-    "autoload": {
-        "files": [
-            "src/functions.php"
-        ]
     },
     "scripts": {
         "test": "phpunit",

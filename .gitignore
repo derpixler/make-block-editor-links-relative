@@ -9,3 +9,4 @@ tests/e2e/test-results/
 tests/e2e/.auth/
 .DS_Store
 *.log
+/*.zip

@@ -20,6 +20,13 @@ test( 'a link inserted in the block editor is stored domain-free', async ( { pag
 		await welcomeClose.click();
 	}
 
+	// The editor mode is persisted per user, so a previous run may have left it
+	// in code-editor mode. Reset to the visual editor for a stable test.
+	const exitCode = page.getByRole( 'button', { name: 'Exit code editor' } );
+	if ( await exitCode.isVisible().catch( () => false ) ) {
+		await exitCode.click();
+	}
+
 	// The block editor canvas lives in its own iframe.
 	const canvas = page.frameLocator( 'iframe[name="editor-canvas"]' );
 

@@ -18,10 +18,16 @@ Die Dateien liegen im SVN im Top-Level-Ordner `assets/` (Geschwister von
 - `hero.jpg` — 1408 × 768 (1,83:1) · Quelle für Banner + GitHub-README-Hero
 - `icon.jpg` — 558 × 535 · Quelle für das Icon
 
-## Noch offen
+## Screenshots (1280 × 720, 16:9)
 
-- `screenshot-1.png` / `.jpg` (1280 × 720, 16:9) — Screenshot aus dem Plugin
-  (Editor/Frontend), max. 10 Stück. Müssen manuell erstellt werden.
+| Datei | Inhalt |
+|---|---|
+| `screenshot-1.png` | Frontend: Seite mit relativen internen Links/Bildern, externer Link bleibt absolut |
+| `screenshot-2.png` | Block-Editor (visuell) mit Link-erzeugenden Blöcken |
+| `screenshot-3.png` | Code-Editor: gespeichertes Markup ohne Domain |
+
+Erzeugt mit Playwright (`tests/e2e/screenshots.spec.js`), nicht manuell editieren —
+bei Bedarf das Spec neu ausführen: `cd tests/e2e && npx playwright test screenshots.spec.js`.
 
 ## Regeln (WordPress.org)
 

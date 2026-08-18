@@ -5,7 +5,7 @@
  * No WordPress bootstrap required — the pure functions in src/functions.php
  * are exercised directly with an explicit base-URL list.
  *
- * @package WP_Make_Gutenberg_Links_Relative
+ * @package WP_Make_Block_Editor_Links_Relative
  */
 
 use PHPUnit\Framework\Attributes\DataProvider;
