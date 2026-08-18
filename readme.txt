@@ -1,4 +1,4 @@
-=== WP Make Block Editor Links Relative ===
+=== Make Block Editor Links Relative ===
 Contributors: derpixler
 Tags: relative urls, links, block editor, migration, staging
 Requires at least: 5.8
@@ -37,7 +37,7 @@ the stored content.
 == Installation ==
 
 1. Upload the plugin directory to `/wp-content/plugins/`, or install it via
-   Composer (`derpixler/wp-make-block-editor-links-relative`).
+   Composer (`derpixler/make-block-editor-links-relative`).
 2. Activate the plugin.
 3. Done — no further configuration.
 

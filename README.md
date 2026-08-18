@@ -1,6 +1,6 @@
-# WP Make Block Editor Links Relative
+# Make Block Editor Links Relative
 
-![WP Make Block Editor Links Relative](assets/hero.jpg)
+![Make Block Editor Links Relative](assets/hero.jpg)
 
 **Your WordPress site is quietly poisoning its own database — and one day it will cost you a migration.**
 
@@ -86,17 +86,17 @@ Both plain URLs (`https://host/path`) and JSON-escaped URLs (`https:\/\/host\/pa
 ```json
 {
   "repositories": [
-    { "type": "vcs", "url": "https://github.com/derpixler/wp-make-block-editor-links-relative.git" }
+    { "type": "vcs", "url": "https://github.com/derpixler/make-block-editor-links-relative.git" }
   ],
   "require": {
-    "derpixler/wp-make-block-editor-links-relative": "^1.0"
+    "derpixler/make-block-editor-links-relative": "^1.0"
   }
 }
 ```
 
 The package is `type: wordpress-plugin`, so with `composer/installers` it installs
 into `wp-content/plugins/{name}/`. Activate it once (wp-admin → Plugins, or
-`wp plugin activate wp-make-block-editor-links-relative`) — the filters run
+`wp plugin activate make-block-editor-links-relative`) — the filters run
 immediately, no further configuration.
 
 **Manual:** copy the plugin directory into `wp-content/plugins/` and activate it.

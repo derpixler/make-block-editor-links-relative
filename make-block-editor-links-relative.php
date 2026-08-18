@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name:       WP Make Block Editor Links Relative
- * Plugin URI:        https://github.com/derpixler/wp-make-block-editor-links-relative
+ * Plugin Name:       Make Block Editor Links Relative
+ * Plugin URI:        https://github.com/derpixler/make-block-editor-links-relative
  * Description:       Stops the block editor from baking hard-coded domains into your content. Your site's own URLs are stored and rendered root-relative, so staging, production and every future domain change just work.
  * Version:           1.0.0
  * Requires at least: 5.8
@@ -9,9 +9,9 @@
  * Author:            derpixler
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       wp-make-block-editor-links-relative
+ * Text Domain:       make-block-editor-links-relative
  *
- * @package WP_Make_Block_Editor_Links_Relative
+ * @package Make_Block_Editor_Links_Relative
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
