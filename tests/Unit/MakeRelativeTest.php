@@ -15,7 +15,7 @@ class MakeRelativeTest extends TestCase {
 
 	#[DataProvider( 'plain_url_provider' )]
 	public function test_makes_own_plain_urls_relative( $input, $expected ) {
-		$this->assertSame( $expected, wp_mglr_make_relative( $input, array( 'https://example.com' ) ) );
+		$this->assertSame( $expected, mbelr_make_relative( $input, array( 'https://example.com' ) ) );
 	}
 
 	public static function plain_url_provider() {
@@ -43,7 +43,7 @@ class MakeRelativeTest extends TestCase {
 
 	#[DataProvider( 'escaped_url_provider' )]
 	public function test_makes_own_json_escaped_urls_relative( $input, $expected ) {
-		$this->assertSame( $expected, wp_mglr_make_relative( $input, array( 'https://example.com' ) ) );
+		$this->assertSame( $expected, mbelr_make_relative( $input, array( 'https://example.com' ) ) );
 	}
 
 	public static function escaped_url_provider() {
@@ -66,7 +66,7 @@ class MakeRelativeTest extends TestCase {
 
 	#[DataProvider( 'base_urls_provider' )]
 	public function test_strips_multiple_base_urls( $input, $expected, $base_urls ) {
-		$this->assertSame( $expected, wp_mglr_make_relative( $input, $base_urls ) );
+		$this->assertSame( $expected, mbelr_make_relative( $input, $base_urls ) );
 	}
 
 	public static function base_urls_provider() {
@@ -90,14 +90,14 @@ class MakeRelativeTest extends TestCase {
 	}
 
 	public function test_returns_non_string_unchanged() {
-		$this->assertSame( 42, wp_mglr_make_relative( 42, array( 'https://example.com' ) ) );
-		$this->assertNull( wp_mglr_make_relative( null, array( 'https://example.com' ) ) );
-		$this->assertSame( '', wp_mglr_make_relative( '', array( 'https://example.com' ) ) );
+		$this->assertSame( 42, mbelr_make_relative( 42, array( 'https://example.com' ) ) );
+		$this->assertNull( mbelr_make_relative( null, array( 'https://example.com' ) ) );
+		$this->assertSame( '', mbelr_make_relative( '', array( 'https://example.com' ) ) );
 	}
 
 	public function test_null_base_urls_without_wordpress_is_noop() {
-		// In the unit context wp_mglr_get_base_urls() (a WP helper) is undefined,
+		// In the unit context mbelr_get_base_urls() (a WP helper) is undefined,
 		// so a null base-URL list must simply leave the content untouched.
-		$this->assertSame( 'https://example.com/a', wp_mglr_make_relative( 'https://example.com/a' ) );
+		$this->assertSame( 'https://example.com/a', mbelr_make_relative( 'https://example.com/a' ) );
 	}
 }

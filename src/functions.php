@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! function_exists( 'wp_mglr_make_relative' ) ) {
+if ( ! function_exists( 'mbelr_make_relative' ) ) {
 	/**
 	 * Convert a site's own absolute URLs to root-relative URLs.
 	 *
@@ -28,13 +28,13 @@ if ( ! function_exists( 'wp_mglr_make_relative' ) ) {
 	 *                                 detected via WordPress.
 	 * @return string
 	 */
-	function wp_mglr_make_relative( $content, $base_urls = null ) {
+	function mbelr_make_relative( $content, $base_urls = null ) {
 		if ( ! is_string( $content ) || '' === $content ) {
 			return $content;
 		}
 
 		if ( null === $base_urls ) {
-			$base_urls = function_exists( 'wp_mglr_get_base_urls' ) ? wp_mglr_get_base_urls() : array();
+			$base_urls = function_exists( 'mbelr_get_base_urls' ) ? mbelr_get_base_urls() : array();
 		}
 
 		foreach ( (array) $base_urls as $base ) {
@@ -42,14 +42,14 @@ if ( ! function_exists( 'wp_mglr_make_relative' ) ) {
 			if ( '' === $base ) {
 				continue;
 			}
-			$content = wp_mglr_strip_host( $content, $base );
+			$content = mbelr_strip_host( $content, $base );
 		}
 
 		return $content;
 	}
 }
 
-if ( ! function_exists( 'wp_mglr_strip_host' ) ) {
+if ( ! function_exists( 'mbelr_strip_host' ) ) {
 	/**
 	 * Strip a single base URL from all absolute URLs in the given content.
 	 *
@@ -57,7 +57,7 @@ if ( ! function_exists( 'wp_mglr_strip_host' ) ) {
 	 * @param string $base    Base URL to strip, scheme included (e.g. "https://example.com").
 	 * @return string
 	 */
-	function wp_mglr_strip_host( $content, $base ) {
+	function mbelr_strip_host( $content, $base ) {
 		$guard = '(?![a-z0-9.-])'; // Never match example.com inside example.com.evil.tld.
 
 		// 1) Plain absolute URLs: https://example.com.

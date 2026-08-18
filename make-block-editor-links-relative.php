@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/src/functions.php';
 
-if ( ! function_exists( 'wp_mglr_get_base_urls' ) ) {
+if ( ! function_exists( 'mbelr_get_base_urls' ) ) {
 	/**
 	 * Collect the site's own base URLs (home, site, content URLs).
 	 *
 	 * @return string[] Base URLs, scheme + host + optional port (e.g. "https://example.com").
 	 */
-	function wp_mglr_get_base_urls() {
+	function mbelr_get_base_urls() {
 		$bases = array();
 
 		foreach ( array( home_url(), site_url(), content_url() ) as $url ) {
@@ -48,19 +48,19 @@ if ( ! function_exists( 'wp_mglr_get_base_urls' ) ) {
 	}
 }
 
-if ( ! function_exists( 'wp_mglr_make_content_relative' ) ) {
+if ( ! function_exists( 'mbelr_make_content_relative' ) ) {
 	/**
 	 * Filter callback: normalize a content string.
 	 *
 	 * @param string $content Content.
 	 * @return string
 	 */
-	function wp_mglr_make_content_relative( $content ) {
-		return wp_mglr_make_relative( $content );
+	function mbelr_make_content_relative( $content ) {
+		return mbelr_make_relative( $content );
 	}
 }
 
-if ( ! function_exists( 'wp_mglr_rest_pre_insert_post' ) ) {
+if ( ! function_exists( 'mbelr_rest_pre_insert_post' ) ) {
 	/**
 	 * Normalize post_content before the block editor (REST) persists it.
 	 *
@@ -68,9 +68,9 @@ if ( ! function_exists( 'wp_mglr_rest_pre_insert_post' ) ) {
 	 * @param WP_REST_Request  $request       Request object.
 	 * @return stdClass|WP_Post
 	 */
-	function wp_mglr_rest_pre_insert_post( $prepared_post, $request ) {
+	function mbelr_rest_pre_insert_post( $prepared_post, $request ) {
 		if ( isset( $prepared_post->post_content ) && is_string( $prepared_post->post_content ) ) {
-			$prepared_post->post_content = wp_mglr_make_relative( $prepared_post->post_content );
+			$prepared_post->post_content = mbelr_make_relative( $prepared_post->post_content );
 		}
 
 		return $prepared_post;
@@ -79,10 +79,10 @@ if ( ! function_exists( 'wp_mglr_rest_pre_insert_post' ) ) {
 
 if ( function_exists( 'add_filter' ) ) {
 	// Render-time normalization (output layer): never emit a baked-in domain.
-	add_filter( 'the_content', 'wp_mglr_make_content_relative', 99 );
-	add_filter( 'the_excerpt', 'wp_mglr_make_content_relative', 99 );
-	add_filter( 'widget_block_content', 'wp_mglr_make_content_relative', 99 );
-	add_filter( 'widget_text_content', 'wp_mglr_make_content_relative', 99 );
+	add_filter( 'the_content', 'mbelr_make_content_relative', 99 );
+	add_filter( 'the_excerpt', 'mbelr_make_content_relative', 99 );
+	add_filter( 'widget_block_content', 'mbelr_make_content_relative', 99 );
+	add_filter( 'widget_text_content', 'mbelr_make_content_relative', 99 );
 
 	/**
 	 * Filters whether the save-time normalization is active.
@@ -92,8 +92,8 @@ if ( function_exists( 'add_filter' ) ) {
 	 *
 	 * @param bool $enabled Whether save-time normalization is active. Default true.
 	 */
-	if ( apply_filters( 'wp_mglr_enable_save_normalization', true ) ) {
-		add_filter( 'content_save_pre', 'wp_mglr_make_content_relative', 10 );
-		add_filter( 'rest_pre_insert_post', 'wp_mglr_rest_pre_insert_post', 10, 2 );
+	if ( apply_filters( 'mbelr_enable_save_normalization', true ) ) {
+		add_filter( 'content_save_pre', 'mbelr_make_content_relative', 10 );
+		add_filter( 'rest_pre_insert_post', 'mbelr_rest_pre_insert_post', 10, 2 );
 	}
 }
