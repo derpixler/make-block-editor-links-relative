@@ -1,0 +1,15 @@
+{
+  "name": "wp-make-gutenberg-links-relative-e2e",
+  "private": true,
+  "description": "Playwright end-to-end tests for wp-make-gutenberg-links-relative",
+  "scripts": {
+    "env:start": "wp-env start",
+    "env:stop": "wp-env stop",
+    "test": "playwright test",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@wordpress/env": "^10.0.0"
+  }
+}
