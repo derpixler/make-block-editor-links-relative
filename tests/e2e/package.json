@@ -1,7 +1,7 @@
 {
-  "name": "wp-make-gutenberg-links-relative-e2e",
+  "name": "wp-make-block-editor-links-relative-e2e",
   "private": true,
-  "description": "Playwright end-to-end tests for wp-make-gutenberg-links-relative",
+  "description": "Playwright end-to-end tests for wp-make-block-editor-links-relative",
   "scripts": {
     "env:start": "wp-env start",
     "env:stop": "wp-env stop",

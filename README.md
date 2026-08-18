@@ -86,7 +86,7 @@ Both plain URLs (`https://host/path`) and JSON-escaped URLs (`https:\/\/host\/pa
 ```json
 {
   "repositories": [
-    { "type": "vcs", "url": "https://github.com/derpixler/wp-make-gutenberg-links-relative.git" }
+    { "type": "vcs", "url": "https://github.com/derpixler/wp-make-block-editor-links-relative.git" }
   ],
   "require": {
     "derpixler/wp-make-block-editor-links-relative": "^1.0"

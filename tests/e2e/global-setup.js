@@ -15,7 +15,7 @@ const path = require( 'node:path' );
 
 const SITE_URL = process.env.WP_ENV_SITE_URL || 'http://localhost:8888';
 const SLUG = 'e2e-links-relative';
-const PLUGIN_SLUG = 'wp-make-gutenberg-links-relative';
+const PLUGIN_SLUG = 'wp-make-block-editor-links-relative';
 const INTERNAL_PATH = '/internal-target/';
 
 function run( command ) {

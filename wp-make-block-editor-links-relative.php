@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       WP Make Block Editor Links Relative
- * Plugin URI:        https://github.com/derpixler/wp-make-gutenberg-links-relative
+ * Plugin URI:        https://github.com/derpixler/wp-make-block-editor-links-relative
  * Description:       Stops the block editor from baking hard-coded domains into your content. Your site's own URLs are stored and rendered root-relative, so staging, production and every future domain change just work.
  * Version:           1.0.0
  * Requires at least: 5.8
