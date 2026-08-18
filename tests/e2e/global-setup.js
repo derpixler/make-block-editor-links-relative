@@ -22,6 +22,28 @@ function run( command ) {
 	execSync( 'npx wp-env run cli ' + command, { stdio: 'inherit' } );
 }
 
+function runQuiet( command ) {
+	try {
+		execSync( 'npx wp-env run cli ' + command, { stdio: 'ignore' } );
+		return true;
+	} catch ( e ) {
+		return false;
+	}
+}
+
+// wp-env's webServer may report "ready" before `wp core install` has finished
+// (especially in CI). Poll `wp core is-installed` so no wp-cli command runs
+// against a half-installed site.
+async function waitUntilInstalled() {
+	for ( let i = 0; i < 60; i++ ) {
+		if ( runQuiet( 'wp core is-installed' ) ) {
+			return;
+		}
+		await new Promise( ( r ) => setTimeout( r, 2000 ) );
+	}
+	throw new Error( 'WordPress was not installed within 120s' );
+}
+
 // Runs a command and returns the meaningful output line (skipping the
 // "ℹ Starting…" / "✔ Ran…" chatter that wp-env prints around it).
 function runCapture( command ) {
@@ -38,6 +60,8 @@ function runBash( script ) {
 }
 
 module.exports = async () => {
+	await waitUntilInstalled();
+
 	run( 'wp plugin deactivate ' + PLUGIN_SLUG );
 	run( "wp rewrite structure '/%postname%/' --hard" );
 
