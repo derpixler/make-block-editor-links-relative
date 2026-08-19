@@ -62,12 +62,14 @@ Your domain now lives in exactly one place: your environment (`WP_HOME` / `WP_SI
 
 ## How it works
 
-Two layers, one guarantee:
+Four layers, one guarantee:
 
 1. **On save** — `content_save_pre` and `rest_pre_insert_post` strip your own domain from `post_content` *before* it reaches the database. What you save is what you can safely move.
 2. **On render** — `the_content`, `the_excerpt` and widget content strip your own domain from the final HTML. Legacy content that already contains absolute URLs is neutralized on the way out — no database migration required.
+3. **On feed output** — `the_content_feed` and `the_excerpt_rss` restore your own root-relative URLs back to absolute. RSS/Atom readers have no site of their own to resolve `href="/path/"` against, so feeds get the domain put back, while the database and the normal page render stay root-relative.
+4. **On public REST reads** — `rest_prepare_{post_type}` restores `content.rendered` / `excerpt.rendered` back to absolute for every REST request *except* `context=edit` (the block editor's own reads). A headless/decoupled frontend, mobile app, or any other third-party REST consumer is in the exact same position as a feed reader: no site origin of its own to resolve a root-relative path against. `context=edit` requires `edit_post` capability, checked by WordPress core before this filter ever runs — it can't be spoofed by an anonymous or public client, so the block editor keeps working relative while everyone else gets absolute URLs.
 
-Both plain URLs (`https://host/path`) and JSON-escaped URLs (`https:\/\/host\/path`, as used inside block attributes) are handled. External URLs are never touched.
+Both plain URLs (`https://host/path`) and JSON-escaped URLs (`https:\/\/host\/path`, as used inside block attributes) are handled by the save and render layers. External URLs are never touched.
 
 ```php
 // Input (block markup)
@@ -135,6 +137,37 @@ add_filter( 'mbelr_enable_save_normalization', '__return_false' );
 With this filter removed, the save layer is enabled and the database itself stays
 domain-free — that's the recommended mode.
 
+### `mbelr_enable_feed_absolutization`
+
+Controls the **feed layer** only. When `true` (default), root-relative URLs in
+RSS/Atom feed output (`the_content_feed`, `the_excerpt_rss`) are restored to
+absolute, since a feed reader has no site origin of its own to resolve
+`href="/path/"` against.
+
+```php
+add_filter( 'mbelr_enable_feed_absolutization', '__return_false' );
+```
+
+**Use case:** You post-process feed output yourself (e.g. a caching proxy that
+rewrites URLs per-subscriber) and want the plugin to leave feed content
+root-relative like everything else.
+
+### `mbelr_enable_rest_absolutization`
+
+Controls the **REST layer** only. When `true` (default), `content.rendered` and
+`excerpt.rendered` in public REST responses (any `context` other than `edit`)
+are restored to absolute, since a headless frontend or other third-party
+consumer has no site origin of its own to resolve `href="/path/"` against. The
+block editor's own reads (`context=edit`) are never touched.
+
+```php
+add_filter( 'mbelr_enable_rest_absolutization', '__return_false' );
+```
+
+**Use case:** Your only REST consumer *is* the block editor (no headless
+frontend, no external API integration), and you'd rather every representation
+of your content — page, feed, REST — stay root-relative.
+
 ---
 
 ## Testing
@@ -159,14 +192,18 @@ The end-to-end suite covers all three layers:
 | `make-links-relative.spec.js` | Render layer: legacy absolute URLs are neutralized on output, DB untouched |
 | `gutenberg-blocks.spec.js` | Save layer: a landing page of link-generating blocks (heading, paragraph, button, image, list) is stored domain-free via the real block-editor REST endpoint |
 | `block-editor.spec.js` | Backend UI: a link typed in the block editor is saved domain-free |
+| `feed-absolute.spec.js` | Feed layer: `/feed/` restores root-relative URLs back to absolute in `<content:encoded>` |
+| `rest-absolute.spec.js` | REST layer: public REST reads (`context=view`) get absolute URLs, the editor's own `context=edit` reads stay root-relative |
 
 ---
 
 ## FAQ
 
-**Does this break SEO?** No. Canonical URLs, Open Graph tags, sitemaps and RSS feeds are generated from the environment URL, not from `the_content`, so they remain absolute.
+**Does this break SEO?** No. Canonical URLs, Open Graph tags and sitemaps are generated from the environment URL, not from `the_content`, so they're always absolute. RSS/Atom feed content goes through `the_content`/`the_excerpt` like everything else, but the feed layer restores it to absolute before it reaches subscribers — see [Configuration](#configuration).
 
 **What about external links?** They stay exactly as they are.
+
+**What about headless frontends / third-party REST consumers?** They get absolute URLs. `content.rendered` and `excerpt.rendered` are restored to absolute for every REST request except the block editor's own `context=edit` reads — see [Configuration](#configuration).
 
 **Do I still need to run search-replace on old content?** No. The render layer neutralizes old absolute URLs on the fly. A one-time search-replace is still fine if you want a spotless database, but you don't *need* it.
 

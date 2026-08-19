@@ -49,6 +49,85 @@ if ( ! function_exists( 'mbelr_make_relative' ) ) {
 	}
 }
 
+if ( ! function_exists( 'mbelr_make_absolute' ) ) {
+	/**
+	 * Restore root-relative URLs to absolute URLs.
+	 *
+	 * Used for output that is consumed outside the site's own origin (RSS/Atom
+	 * feeds), where a root-relative "/path" has no browser location to resolve
+	 * against and would be meaningless to the reader.
+	 *
+	 * By the time feed hooks run, block markup has already been rendered to
+	 * plain HTML, so only real href/src/srcset attributes need restoring —
+	 * unlike mbelr_make_relative(), there is no JSON-escaped form to handle here.
+	 *
+	 * @param string        $content   Rendered HTML.
+	 * @param string[]|null $base_urls Base URLs; the first one is used as the
+	 *                                 canonical host to restore. When null, the
+	 *                                 list is detected via WordPress.
+	 * @return string
+	 */
+	function mbelr_make_absolute( $content, $base_urls = null ) {
+		if ( ! is_string( $content ) || '' === $content ) {
+			return $content;
+		}
+
+		if ( null === $base_urls ) {
+			$base_urls = function_exists( 'mbelr_get_base_urls' ) ? mbelr_get_base_urls() : array();
+		}
+
+		$base = isset( $base_urls[0] ) ? trim( (string) $base_urls[0] ) : '';
+		if ( '' === $base ) {
+			return $content;
+		}
+
+		return mbelr_add_host( $content, $base );
+	}
+}
+
+if ( ! function_exists( 'mbelr_add_host' ) ) {
+	/**
+	 * Prepend a base URL to root-relative href/src/srcset values.
+	 *
+	 * Protocol-relative URLs ("//host/path") are left untouched.
+	 *
+	 * @param string $content Content to process.
+	 * @param string $base    Base URL to restore, scheme included (e.g. "https://example.com").
+	 * @return string
+	 */
+	function mbelr_add_host( $content, $base ) {
+		// href="/path", src='/path', poster="/path" — single-value attributes.
+		$content = preg_replace(
+			'#\b(href|src|poster)(\s*=\s*)([\'"])/(?!/)#i',
+			'$1$2$3' . $base . '/',
+			$content
+		);
+
+		// srcset="/a 300w, /b 600w" — comma-separated list of candidate URLs.
+		$content = preg_replace_callback(
+			'#\bsrcset(\s*=\s*)([\'"])(.*?)\2#i',
+			function ( $matches ) use ( $base ) {
+				$entries = array_map(
+					function ( $entry ) use ( $base ) {
+						$leading = substr( $entry, 0, strspn( $entry, " \t\n\r" ) );
+						$value   = substr( $entry, strlen( $leading ) );
+						$is_root_relative = isset( $value[0] ) && '/' === $value[0]
+							&& ( ! isset( $value[1] ) || '/' !== $value[1] );
+
+						return $is_root_relative ? $leading . $base . $value : $entry;
+					},
+					explode( ',', $matches[3] )
+				);
+
+				return 'srcset' . $matches[1] . $matches[2] . implode( ',', $entries ) . $matches[2];
+			},
+			$content
+		);
+
+		return $content;
+	}
+}
+
 if ( ! function_exists( 'mbelr_strip_host' ) ) {
 	/**
 	 * Strip a single base URL from all absolute URLs in the given content.

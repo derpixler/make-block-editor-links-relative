@@ -4,7 +4,7 @@ Tags: relative urls, links, block editor, migration, staging
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,9 +27,17 @@ It converts the site's **own** URLs to root-relative paths (`/path/` instead of
 * **On render** — `the_content`, `the_excerpt` and widget content strip the site's
   base URL from the output, so existing content is also neutralized without a
   database migration.
+* **On feed output** — `the_content_feed` and `the_excerpt_rss` restore the
+  site's own root-relative URLs back to absolute, since RSS/Atom readers have
+  no site of their own to resolve `/path/` against.
+* **On public REST reads** — `rest_prepare_{post_type}` restores
+  `content.rendered` / `excerpt.rendered` back to absolute for every REST
+  request except the block editor's own `context=edit` reads, so headless
+  frontends and other third-party API consumers get working URLs too.
 
-External links are left untouched. RSS feeds, canonical URLs, Open Graph tags and
-sitemaps are generated from the site URL and remain absolute.
+External links are left untouched. Canonical URLs, Open Graph tags and sitemaps
+are generated from the site URL and remain absolute; RSS/Atom feed content and
+public REST responses are put back to absolute by the layers above.
 
 The domain itself is defined by the environment (`WP_HOME` / `WP_SITEURL`), not by
 the stored content.
@@ -54,12 +62,19 @@ required.
 
 = Does it break SEO? =
 
-No. Canonical URLs, Open Graph tags, sitemaps and RSS feeds are generated from
-the environment URL and remain absolute.
+No. Canonical URLs, Open Graph tags and sitemaps are generated from the
+environment URL and remain absolute. RSS/Atom feed content is restored to
+absolute by the feed layer before it reaches subscribers.
 
 = What about external links? =
 
 They are never modified.
+
+= What about headless frontends or other third-party REST consumers? =
+
+They get absolute URLs. `content.rendered` and `excerpt.rendered` are restored
+to absolute for every REST request except the block editor's own
+`context=edit` reads.
 
 = Does it change the database on activation? =
 
@@ -72,6 +87,17 @@ No. It only changes what is written from that point on.
 3. The code editor shows the content stored domain-free.
 
 == Changelog ==
+
+= 1.1.0 =
+
+* Added a feed layer: `the_content_feed` and `the_excerpt_rss` now restore
+  root-relative URLs back to absolute in RSS/Atom feed output, since feed
+  readers have no site of their own to resolve `/path/` against. Filterable
+  via `mbelr_enable_feed_absolutization`.
+* Added a REST layer: `rest_prepare_{post_type}` now restores `content.rendered`
+  / `excerpt.rendered` back to absolute for public REST reads (any `context`
+  other than `edit`), so headless frontends and other third-party API
+  consumers get working URLs. Filterable via `mbelr_enable_rest_absolutization`.
 
 = 1.0.0 =
 

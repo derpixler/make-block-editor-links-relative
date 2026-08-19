@@ -93,7 +93,7 @@ test( 'capture plugin screenshots', async ( { page, request } ) => {
 	await page.screenshot( { path: path.join( ASSETS_DIR, 'screenshot-2.png' ) } );
 
 	// 3) Code editor: the stored markup is domain-free.
-	await page.getByRole( 'button', { name: 'Options' } ).click();
+	await page.getByRole( 'button', { name: 'Options', exact: true } ).click();
 	await page.getByRole( 'menuitemradio', { name: 'Code editor' } ).click();
 	const codeArea = page.locator( 'textarea.editor-post-text-editor' );
 	await codeArea.waitFor( { state: 'visible', timeout: 30000 } );

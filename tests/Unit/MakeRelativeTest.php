@@ -105,4 +105,43 @@ class MakeRelativeTest extends TestCase {
 		// so a null base-URL list must simply leave the content untouched.
 		$this->assertSame( 'https://example.com/a', mbelr_make_relative( 'https://example.com/a' ) );
 	}
+
+	#[DataProvider( 'absolute_provider' )]
+	public function test_makes_root_relative_urls_absolute( $input, $expected ) {
+		$this->assertSame( $expected, mbelr_make_absolute( $input, array( 'https://example.com' ) ) );
+	}
+
+	public static function absolute_provider() {
+		return array(
+			'href path'                  => array( '<a href="/path">x</a>', '<a href="https://example.com/path">x</a>' ),
+			'href root'                  => array( '<a href="/">x</a>', '<a href="https://example.com/">x</a>' ),
+			'single quotes'              => array( "<a href='/path'>x</a>", "<a href='https://example.com/path'>x</a>" ),
+			'img src'                    => array( '<img src="/x.jpg">', '<img src="https://example.com/x.jpg">' ),
+			'video poster'               => array( '<video poster="/x.jpg">', '<video poster="https://example.com/x.jpg">' ),
+			'protocol relative untouched' => array( '<a href="//cdn.example.net/x">x</a>', '<a href="//cdn.example.net/x">x</a>' ),
+			'already absolute untouched' => array( '<a href="https://example.org/x">x</a>', '<a href="https://example.org/x">x</a>' ),
+			'srcset list'                => array(
+				'<img srcset="/a-300.jpg 300w, /a-600.jpg 600w">',
+				'<img srcset="https://example.com/a-300.jpg 300w, https://example.com/a-600.jpg 600w">',
+			),
+			'srcset with protocol relative entry' => array(
+				'<img srcset="/a-300.jpg 300w, //cdn.example.net/a-600.jpg 600w">',
+				'<img srcset="https://example.com/a-300.jpg 300w, //cdn.example.net/a-600.jpg 600w">',
+			),
+			'mixed content'              => array(
+				'<p>See <a href="/a">a</a> and <a href="https://example.org/b">b</a></p>',
+				'<p>See <a href="https://example.com/a">a</a> and <a href="https://example.org/b">b</a></p>',
+			),
+		);
+	}
+
+	public function test_make_absolute_returns_non_string_unchanged() {
+		$this->assertSame( 42, mbelr_make_absolute( 42, array( 'https://example.com' ) ) );
+		$this->assertNull( mbelr_make_absolute( null, array( 'https://example.com' ) ) );
+		$this->assertSame( '', mbelr_make_absolute( '', array( 'https://example.com' ) ) );
+	}
+
+	public function test_make_absolute_null_base_urls_without_wordpress_is_noop() {
+		$this->assertSame( '<a href="/a">x</a>', mbelr_make_absolute( '<a href="/a">x</a>' ) );
+	}
 }
