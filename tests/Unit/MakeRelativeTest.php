@@ -23,10 +23,13 @@ class MakeRelativeTest extends TestCase {
 			'https path'             => array( 'https://example.com/path', '/path' ),
 			'other scheme untouched' => array( 'http://example.com/path', 'http://example.com/path' ),
 			'protocol relative untouched' => array( '//example.com/path', '//example.com/path' ),
-			'bare host'              => array( 'https://example.com', '' ),
+			'bare host'              => array( 'https://example.com', '/' ),
 			'trailing slash'         => array( 'https://example.com/', '/' ),
+			'query only'             => array( 'https://example.com?q=1', '/?q=1' ),
+			'fragment only'          => array( 'https://example.com#frag', '/#frag' ),
 			'query and fragment'     => array( 'https://example.com/path?q=1#frag', '/path?q=1#frag' ),
 			'inline anchor'          => array( '<a href="https://example.com/path">x</a>', '<a href="/path">x</a>' ),
+			'inline bare host link'  => array( '<a href="https://example.com">x</a>', '<a href="/">x</a>' ),
 			'inline image'           => array( '<img src="https://example.com/wp-content/x.jpg">', '<img src="/wp-content/x.jpg">' ),
 			'uppercase scheme'       => array( 'HTTPS://EXAMPLE.COM/path', '/path' ),
 			'mixed case host'        => array( 'https://Example.Com/path', '/path' ),
@@ -49,6 +52,8 @@ class MakeRelativeTest extends TestCase {
 	public static function escaped_url_provider() {
 		return array(
 			'escaped https'          => array( 'https:\/\/example.com\/path', '\/path' ),
+			'escaped bare host'      => array( 'https:\/\/example.com', '\/' ),
+			'escaped trailing slash' => array( 'https:\/\/example.com\/', '\/' ),
 			'escaped other scheme untouched' => array( 'http:\/\/example.com\/path', 'http:\/\/example.com\/path' ),
 			'escaped protocol rel untouched' => array( '\/\/example.com\/path', '\/\/example.com\/path' ),
 			'block attribute'        => array(

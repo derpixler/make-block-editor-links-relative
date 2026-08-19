@@ -108,7 +108,7 @@ immediately, no further configuration.
 The site's own base URLs are derived automatically from WordPress
 (`home_url()`, `site_url()`, `content_url()`) — i.e. from `WP_HOME` / `WP_SITEURL`.
 
-### `wp_mglr_enable_save_normalization`
+### `mbelr_enable_save_normalization`
 
 Controls the **save layer** only. When `true` (default), the site's base URL is
 stripped from `post_content` *before* it is written to the database — the domain
@@ -119,7 +119,7 @@ Disable it to run in **render-only mode**: the database keeps absolute URLs, but
 the frontend output is still normalized on the fly.
 
 ```php
-add_filter( 'wp_mglr_enable_save_normalization', '__return_false' );
+add_filter( 'mbelr_enable_save_normalization', '__return_false' );
 ```
 
 **Use case:** You run the plugin on a site where another tool reads `post_content`
@@ -129,7 +129,7 @@ see:
 
 ```php
 // Keep absolute URLs in the DB, normalize the output only.
-add_filter( 'wp_mglr_enable_save_normalization', '__return_false' );
+add_filter( 'mbelr_enable_save_normalization', '__return_false' );
 ```
 
 With this filter removed, the save layer is enabled and the database itself stays

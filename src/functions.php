@@ -61,17 +61,29 @@ if ( ! function_exists( 'mbelr_strip_host' ) ) {
 		$guard = '(?![a-z0-9.-])'; // Never match example.com inside example.com.evil.tld.
 
 		// 1) Plain absolute URLs: https://example.com.
+		// Strip the host when a path follows; otherwise substitute the host
+		// with "/" so a bare host becomes root-relative instead of empty.
+		$content = preg_replace(
+			'#' . preg_quote( $base, '#' ) . '(?=/)#i',
+			'',
+			$content
+		);
 		$content = preg_replace(
 			'#' . preg_quote( $base, '#' ) . $guard . '#i',
-			'',
+			'/',
 			$content
 		);
 
 		// 2) JSON-escaped URLs (block attributes): https:\/\/example.com.
 		$escaped = str_replace( '//', '\\/\\/', $base );
 		$content = preg_replace(
-			'#' . preg_quote( $escaped, '#' ) . $guard . '#i',
+			'#' . preg_quote( $escaped, '#' ) . '(?=\\\/)#i',
 			'',
+			$content
+		);
+		$content = preg_replace(
+			'#' . preg_quote( $escaped, '#' ) . $guard . '#i',
+			'\\/',
 			$content
 		);
 
